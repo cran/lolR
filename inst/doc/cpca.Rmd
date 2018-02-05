@@ -1,10 +1,10 @@
 ---
-title: "class-conditional PCA"
+title: "class-conditional Principal Component Analysis"
 author: "Eric Bridgeford"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{class-conditional Principal Component Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

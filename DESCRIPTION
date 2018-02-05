@@ -1,7 +1,7 @@
 Package: lolR
 Type: Package
-Title: Linear Optimal Low-Rank Projection
-Version: 1.0
+Title: Linear Optimal Low-Rank Projection (LOL)
+Version: 1.0.1
 Date: 2018-02-02
 Authors@R: c(person("Eric", "Bridgeford", role = c("aut", "cre"),
 	   	    email = "ericwb95@gmail.com"),
@@ -23,10 +23,10 @@ VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, parallel, randomForest, latex2exp
 NeedsCompilation: no
-Packaged: 2018-02-02 22:14:59 UTC; eric
+Packaged: 2018-02-05 14:59:34 UTC; eric
 Author: Eric Bridgeford [aut, cre],
   Minh Tang [ctb],
   Jason Yim [ctb],
   Joshua Vogelstein [ths]
 Repository: CRAN
-Date/Publication: 2018-02-05 12:46:30 UTC
+Date/Publication: 2018-02-05 22:41:19 UTC
