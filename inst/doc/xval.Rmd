@@ -1,0 +1,51 @@
+---
+title: "LOL Cross-Validation"
+author: "Eric Bridgeford"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Cross Validation
+
+```{r}
+require(lolR)
+require(ggplot2)
+n = 400
+d = 30
+r = 3
+```
+
+Here, we look at how to see the generalizability of a given model in the form of the cross-validated error. We simulate data with `n=200` and `d=30`:
+
+```{r, fig.width=5}
+testdat <- lol.sims.rtrunk(n, d)
+X <- testdat$X
+Y <- testdat$Y
+
+data <- data.frame(x1=X[,1], x2=X[,2], y=Y)
+data$y <- factor(data$y)
+ggplot(data, aes(x=x1, y=x2, color=y)) +
+  geom_point() +
+  xlab("x1") +
+  ylab("x2") +
+  ggtitle("Simulated Data")
+```
+
+We arbitrarily select LOL as our algorithm, and look at the leave-one-out (loo) cross-validated error with the LDA classifier. We project the resulting model to `3` dimensions and visualize the first `2`:
+
+```{r, fig.width=5}
+result <- lol.xval.eval(X, Y, alg = lol.project.lol, alg.opts=list(r=r), alg.return="A",
+                        classifier=MASS::lda, classifier.return="class", k='loo')
+
+data <- data.frame(x1=result$model$Xr[,1], x2=result$model$Xr[,2], y=Y)
+data$y <- factor(data$y)
+ggplot(data, aes(x=x1, y=x2, color=y)) +
+  geom_point() +
+  xlab("x1") +
+  ylab("x2") +
+  ggtitle(sprintf("Projected Data using LOL, L=%.2f", result$Lhat))
+```
