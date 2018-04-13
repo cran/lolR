@@ -16,18 +16,24 @@ lol.project.lrcca(X, Y, r, ...)
 \item{...}{trailing args.}
 }
 \value{
-A list of containing the following:
-\item{A}{\code{[d, r]} the projection matrix from \code{d} to \code{r} dimensions.}
-\item{d}{\code{[r]} the signular values associated with the projection matrix \code{A}.}
-\item{ylabs}{\code{[K]} vector containing the \code{K} unique, ordered class labels.}
-\item{centroids}{\code{[K, d]} centroid matrix of the \code{K} unique, ordered classes in native \code{d} dimensions.}
-\item{priors}{\code{[K]} vector containing the \code{K} prior probabilities for the unique, ordered classes.}
-\item{Xr}{\code{[n, r]} the \code{n} data points in reduced dimensionality \code{r}.}
-\item{cr}{\code{[K, r]} the \code{K} centroids in reduced dimensionality \code{r}.}
+A list containing the following:
+\item{\code{A}}{\code{[d, r]} the projection matrix from \code{d} to \code{r} dimensions.}
+\item{\code{d}}{the eigen values associated with the eigendecomposition.}
+\item{\code{ylabs}}{\code{[K]} vector containing the \code{K} unique, ordered class labels.}
+\item{\code{centroids}}{\code{[K, d]} centroid matrix of the \code{K} unique, ordered classes in native \code{d} dimensions.}
+\item{\code{priors}}{\code{[K]} vector containing the \code{K} prior probabilities for the unique, ordered classes.}
+\item{\code{Xr}}{\code{[n, r]} the \code{n} data points in reduced dimensionality \code{r}.}
+\item{\code{cr}}{\code{[K, r]} the \code{K} centroids in reduced dimensionality \code{r}.}
 }
 \description{
 A function for implementing the Low-rank Canonical Correlation Analysis (LR-CCA) Algorithm.
 }
+\section{Details}{
+
+For more details see the help vignette:
+\code{vignette("lrcca", package = "lolR")}
+}
+
 \examples{
 library(lolR)
 data <- lol.sims.rtrunk(n=200, d=30)  # 200 examples of 30 dimensions

@@ -1,4 +1,4 @@
-## ---- echo=FALSE---------------------------------------------------------
+## ------------------------------------------------------------------------
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -20,7 +20,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)
@@ -44,7 +44,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)
@@ -68,7 +68,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)

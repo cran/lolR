@@ -1,15 +1,15 @@
 ---
-title: "Maximal Data Piling"
+title: "Data Piling"
 author: "Eric Bridgeford"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Maximal Data Piling}
+  %\VignetteIndexEntry{dp}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE}
+```{r}
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -20,7 +20,7 @@ r=3
 
 Data for this notebook will be `n=400` examples of `d=30` dimensions.
 
-# MDP
+# DP
 
 ## Stacked Cigar Simulation
 
@@ -43,7 +43,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
 Projecting with MDP to `K-1=1` dimension and visualizing:
 
 ```{r, fig.width=5}
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)
@@ -75,7 +75,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
 Projecting with MDP to `K-1=1` dimensions and visualizing:
 
 ```{r, fig.width=5}
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)
@@ -107,7 +107,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
 Projecting with MDP to `K-1=1` dimensions and visualizing:
 
 ```{r, fig.width=5}
-result <- lol.project.mdp(X, Y)
+result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
 data$y <- factor(data$y)

@@ -1,15 +1,15 @@
 ---
-title: "class-conditional Principal Component Analysis"
+title: "Mean-Augmented Partial Least-Squares (MPLS)"
 author: "Eric Bridgeford"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{class-conditional Principal Component Analysis}
+  %\VignetteIndexEntry{mpls}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE}
+```{r}
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -20,7 +20,7 @@ r=3
 
 Data for this notebook will be `n=400` examples of `d=30` dimensions.
 
-# cPCA
+# MPLS
 
 ## Stacked Cigar Simulation
 
@@ -41,10 +41,10 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 ```
 
-Projecting with cPCA to `3` dimensions and visualizing the first `2`:
+Projecting with MPLS to `3` dimensions and visualizing the first `2`:
 
 ```{r, fig.width=5}
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.mpls(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -52,7 +52,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using MPLS")
 ```
 
 Projecting with LDA to `K-1=1` dimensions:
@@ -66,9 +66,9 @@ data <- data.frame(x1=result$x[,1], y=Y)
 data$y <- factor(data$y)
 ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
-  xlab("x1") +
+  xlab("$x_1$") +
   ylab("Density") +
-  ggtitle(sprintf("cPCA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("MPLS-LDA, L = %.2f", lhat))
 ```
 
 ## Trunk Simulation
@@ -89,10 +89,10 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 ```
 
-Projecting with cPCA to `3` dimensions and visualizing the first `2`:
+Projecting with MPLS to `3` dimensions and visualizing the first `2`:
 
 ```{r, fig.width=5}
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.mpls(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -100,7 +100,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using MPLS")
 ```
 
 Projecting with LDA to `K-1=1` dimensions:
@@ -116,7 +116,7 @@ ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
   xlab("x1") +
   ylab("Density") +
-  ggtitle(sprintf("cPA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("MPLS-LDA, L = %.2f", lhat))
 ```
 
 ## Rotated Trunk Simulation
@@ -137,10 +137,10 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 ```
 
-Projecting with cPCA to `3` dimensions and visualizing the first `2`:
+Projecting with MPLS to `3` dimensions and visualizing the first `2`:
 
 ```{r, fig.width=5}
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.mpls(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -148,7 +148,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using MPLS")
 ```
 
 Projecting with LDA to `K-1=1` dimensions:
@@ -164,6 +164,5 @@ ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
   xlab("x1") +
   ylab("Density") +
-  ggtitle(sprintf("cPCA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("MPLS-LDA, L = %.2f", lhat))
 ```
-

@@ -1,4 +1,4 @@
-## ---- echo=FALSE---------------------------------------------------------
+## ------------------------------------------------------------------------
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -20,7 +20,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.opal(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -28,7 +28,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using OPAL")
 
 ## ---- fig.width=5--------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
@@ -39,9 +39,9 @@ data <- data.frame(x1=result$x[,1], y=Y)
 data$y <- factor(data$y)
 ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
-  xlab("x1") +
+  xlab("$x_1$") +
   ylab("Density") +
-  ggtitle(sprintf("cPCA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("OPAL-LDA, L = %.2f", lhat))
 
 ## ---- fig.width=5--------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d)
@@ -57,7 +57,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.opal(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -65,7 +65,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using OPAL")
 
 ## ---- fig.width=5--------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
@@ -78,7 +78,7 @@ ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
   xlab("x1") +
   ylab("Density") +
-  ggtitle(sprintf("cPA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("OPAL-LDA, L = %.2f", lhat))
 
 ## ---- fig.width=5--------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d, rotate=TRUE)
@@ -94,7 +94,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.project.cpca(X, Y, r)
+result <- lol.project.opal(X, Y, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
 data$y <- factor(data$y)
@@ -102,7 +102,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle("Projected Data using cPCA")
+  ggtitle("Projected Data using OPAL")
 
 ## ---- fig.width=5--------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
@@ -115,5 +115,5 @@ ggplot(data, aes(x=x1, fill=y)) +
   geom_density(adjust=1.5, alpha=0.6) +
   xlab("x1") +
   ylab("Density") +
-  ggtitle(sprintf("cPCA-LDA, L = %.2f", lhat))
+  ggtitle(sprintf("OPAL-LDA, L = %.2f", lhat))
 

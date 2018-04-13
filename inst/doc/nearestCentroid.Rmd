@@ -4,12 +4,12 @@ author: "Eric Bridgeford"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Nearest Centroid Classifier}
+  %\VignetteIndexEntry{centroid}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE}
+```{r}
 require(lolR)
 require(ggplot2)
 require(MASS)

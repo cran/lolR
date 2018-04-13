@@ -8,6 +8,11 @@
 #' \item{centroids}{\code{[K, d]} the centroids of each class with \code{K}  classes in \code{d} dimensions.}
 #' \item{ylabs}{\code{[K]} the ylabels for each of the \code{K} unique classes, ordered.}
 #' \item{priors}{\code{[K]} the priors for each of the \code{K} classes.}
+#'
+#' @section Details:
+#' For more details see the help vignette:
+#' \code{vignette("centroid", package = "lolR")}
+#'
 #' @author Eric Bridgeford
 #'
 #' @examples
@@ -37,6 +42,11 @@ lol.classify.nearestCentroid <- function(X, Y, ...) {
 #' @param X \code{[n, d]} the data to classify with \code{n} samples in \code{d} dimensions.
 #' @param ... optional args.
 #' @return Yhat \code{[n]} the predicted class of each of the \code{n} data point in \code{X}.
+#'
+#' @section Details:
+#' For more details see the help vignette:
+#' \code{vignette("centroid", package = "lolR")}
+#'
 #' @author Eric Bridgeford
 #'
 #' @examples
@@ -51,7 +61,7 @@ predict.nearestCentroid <- function(object, X, ...) {
   dists <- array(0, dim=c(n, K))
   for (i in 1:n) {
     for (j in 1:K) {
-      dists[i, j] <- sqrt(sum((X[i,] - object$centroids[j,])^2))
+      dists[i, j] <- sqrt(sum((X[i,] - object$centroids[,j])^2))
     }
   }
   Yass <- apply(dists, c(1), which.min)

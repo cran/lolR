@@ -19,7 +19,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ggtitle("Simulated Data")
 
 ## ---- fig.width=5--------------------------------------------------------
-result <- lol.xval.eval(X, Y, alg = lol.project.lol, alg.opts=list(r=r), alg.return="A",
+result <- lol.xval.eval(X, Y, r, alg = lol.project.lol, alg.return="A",
                         classifier=MASS::lda, classifier.return="class", k='loo')
 
 data <- data.frame(x1=result$model$Xr[,1], x2=result$model$Xr[,2], y=Y)
@@ -28,5 +28,26 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   geom_point() +
   xlab("x1") +
   ylab("x2") +
-  ggtitle(sprintf("Projected Data using LOL, L=%.2f", result$Lhat))
+  ggtitle(sprintf("Projected Data using LOL, L=%.2f", result$lhat))
+
+## ------------------------------------------------------------------------
+result <- lol.xval.optimal_dimselect(X, Y, rs=c(5, 10, 15), alg = lol.project.lol, alg.return="A",
+                        classifier=MASS::lda, classifier.return="class", k='loo')
+
+data <- data.frame(x1=result$model$Xr[,1], x2=result$model$Xr[,2], y=Y)
+data$y <- factor(data$y)
+ggplot(data, aes(x=x1, y=x2, color=y)) +
+  geom_point() +
+  xlab("x1") +
+  ylab("x2") +
+  ggtitle(sprintf("Projected Data using LOL, L=%.2f", result$optimal.lhat))
+
+ggplot(result$foldmeans.data, aes(x=r, y=lhat)) +
+  geom_line() +
+  xlab("Embedding Dimensions, r") +
+  ylab("Misclassification Rate, L") +
+  ggtitle("Impact on Misclassification Rate of Embedding Dimension")
+
+print(sprintf("optimal dimension: %d", result$optimal.r))
+print(sprintf("Misclassification rate at rhat = %d: %.2f", result$optimal.r, result$optimal.lhat))
 
