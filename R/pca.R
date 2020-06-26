@@ -3,17 +3,19 @@
 #' A function that performs PCA on data.
 #'
 #' @importFrom irlba irlba
+#' @importFrom robustbase colMedians
 #' @param X \code{[n, d]} the data with \code{n} samples in \code{d} dimensions.
 #' @param r the rank of the projection.
 #' @param xfm whether to transform the variables before taking the SVD.
 #' \itemize{
 #' \item{FALSE}{apply no transform to the variables.}
-#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \link[base]{scale} for details and optional args.}
-#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \link[base]{log} for details and optional args.}
-#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \link[base]{rank} for details and optional args.}
+#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \code{\link[base]{scale}} for details and optional arguments to be passed with \code{xfm.opts}.}
+#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \code{\link[base:Log]{log}} for details and optional arguments to be passed with \code{xfm.opts}.}
+#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \code{\link[base]{rank}} for details and optional arguments to be passed with \code{xfm.opts}.}
 #' \item{c(opt1, opt2, etc.)}{apply the transform specified in opt1, followed by opt2, etc.}
 #' }
 #' @param xfm.opts optional arguments to pass to the \code{xfm} option specified. Should be a numbered list of lists, where \code{xfm.opts[[i]]} corresponds to the optional arguments for \code{xfm[i]}. Defaults to the default options for each transform scheme.
+#' @param robust whether to perform PCA on a robust estimate of the covariance matrix or not. Defaults to \code{FALSE}.
 #' @param ... trailing args.
 #' @return A list containing the following:
 #' \item{\code{A}}{\code{[d, r]} the projection matrix from \code{d} to \code{r} dimensions.}
@@ -31,37 +33,42 @@
 #' X <- data$X; Y <- data$Y
 #' model <- lol.project.pca(X=X, r=2)  # use pca to project into 2 dimensions
 #' @export
-lol.project.pca <- function(X, r, xfm=FALSE, xfm.opts=list(), ...) {
+lol.project.pca <- function(X, r, xfm=FALSE, xfm.opts=list(), robust=FALSE,...) {
   # mean center by the column mean
   d <- dim(X)[2]
   if (r > d) {
     stop(sprintf("The number of embedding dimensions, r=%d, must be lower than the number of native dimensions, d=%d", r, d))
   }
   # subtract means
-  Xc  <- sweep(X, 2, colMeans(X), '-')
-  svdX <- lol.utils.svd(Xc, xfm=xfm, xfm.opts=xfm.opts, nv=r, nu=0)
+  if (!robust) {
+    Xc  <- sweep(X, 2, colMeans(X), '-')
+  } else {
+    Xc  <- sweep(X, 2, colMedians(X), '-')
+  }
+  X.decomp <- lol.utils.decomp(Xc, xfm=xfm, xfm.opts=xfm.opts, ncomp=r, robust=robust)
 
-  return(list(A=svdX$v, d=svdX$d, Xr=lol.embed(X, svdX$v)))
+  return(list(A=X.decomp$comp, d=X.decomp$val, Xr=lol.embed(X, X.decomp$comp)))
 }
 
 #' A utility to use irlba when necessary
 #' @importFrom irlba irlba
+#' @importFrom robust covRob
 #' @param X the data to compute the svd of.
-#' @param nu the number of left singular vectors to retain.
-#' @param nv the number of right singular vectors to retain.
+#' @param ncomp the number of left singular vectors to retain.
 #' @param t the threshold of percent of singular vals/vecs to use irlba.
 #' @param xfm whether to transform the variables before taking the SVD.
 #' \itemize{
 #' \item{FALSE}{apply no transform to the variables.}
-#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \link[base]{scale} for details and optional args.}
-#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \link[base]{log} for details and optional args.}
-#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \link[base]{rank} for details and optional args.}
+#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \code{\link[base]{scale}} for details and optional args.}
+#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \code{\link[base:Log]{log}} for details and optional args.}
+#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \code{\link[base]{rank}} for details and optional args.}
 #' \item{c(opt1, opt2, etc.)}{apply the transform specified in opt1, followed by opt2, etc.}
 #' }
 #' @param xfm.opts optional arguments to pass to the \code{xfm} option specified. Should be a numbered list of lists, where \code{xfm.opts[[i]]} corresponds to the optional arguments for \code{xfm[i]}. Defaults to the default options for each transform scheme.
+#' @param robust whether to use a robust estimate of the covariance matrix when taking PCA. Defaults to \code{FALSE}.
 #' @return the svd of X.
 #' @author Eric Bridgeford
-lol.utils.svd <- function(X, xfm=FALSE, xfm.opts=list(), nu=0, nv=0, t=.05) {
+lol.utils.decomp <- function(X, xfm=FALSE, xfm.opts=list(), ncomp=0, t=.05, robust=FALSE) {
   n <- nrow(X)
   d <- ncol(X)
   # scale if desired before taking SVD
@@ -79,12 +86,21 @@ lol.utils.svd <- function(X, xfm=FALSE, xfm.opts=list(), nu=0, nv=0, t=.05) {
     }
   }
   # take svd
-  if (nu > t*d | nv > t*d | nu >= d | nv >= d) {
-    svdX <- svd(X, nu=nu, nv=nv)
+  decomp <- list()
+  if (robust) {
+    eigenX <- eigen(covRob(X, estim='weighted')$cov)
+    decomp$comp <- eigenX$vectors[, 1:ncomp, drop=FALSE]
+    decomp$val <- eigenX$values[1:ncomp]
+  } else if (ncomp > t*d | ncomp >= d) {
+    svdX <- svd(X, nu=0, nv=ncomp)
+    decomp$comp <- svdX$v
+    decomp$val <- svdX$d
   } else {
-    svdX <- irlba(X, nu=nu, nv=nv)
+    svdX <- irlba(X, nu=0, nv=ncomp)
+    decomp$comp <- svdX$v
+    decomp$val <- svdX$d
   }
-  return(svdX)
+  return(decomp)
 }
 
 #' Low-Rank Linear Discriminant Analysis (LRLDA)
@@ -97,12 +113,13 @@ lol.utils.svd <- function(X, xfm=FALSE, xfm.opts=list(), nu=0, nv=0, t=.05) {
 #' @param xfm whether to transform the variables before taking the SVD.
 #' \itemize{
 #' \item{FALSE}{apply no transform to the variables.}
-#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \link[base]{scale} for details and optional args.}
-#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \link[base]{log} for details and optional args.}
-#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \link[base]{rank} for details and optional args.}
+#' \item{'unit'}{unit transform the variables, defaulting to centering and scaling to mean 0, variance 1. See \code{\link[base]{scale}} for details and optional args.}
+#' \item{'log'}{log-transform the variables, for use-cases such as having high variance in larger values. Defaults to natural logarithm. See \code{\link[base:Log]{log}} for details and optional args.}
+#' \item{'rank'}{rank-transform the variables. Defalts to breaking ties with the average rank of the tied values. See \code{\link[base]{rank}} for details and optional args.}
 #' \item{c(opt1, opt2, etc.)}{apply the transform specified in opt1, followed by opt2, etc.}
 #' }
 #' @param xfm.opts optional arguments to pass to the \code{xfm} option specified. Should be a numbered list of lists, where \code{xfm.opts[[i]]} corresponds to the optional arguments for \code{xfm[i]}. Defaults to the default options for each transform scheme.
+#' @param robust whether to use a robust estimate of the covariance matrix when taking PCA. Defaults to \code{FALSE}.
 #' @param ... trailing args.
 #' @return A list containing the following:
 #' \item{\code{A}}{\code{[d, r]} the projection matrix from \code{d} to \code{r} dimensions.}
@@ -122,11 +139,11 @@ lol.utils.svd <- function(X, xfm=FALSE, xfm.opts=list(), nu=0, nv=0, t=.05) {
 #' library(lolR)
 #' data <- lol.sims.rtrunk(n=200, d=30)  # 200 examples of 30 dimensions
 #' X <- data$X; Y <- data$Y
-#' model <- lol.project.lrlda(X=X, Y=Y, r=2)  # use cpca to project into 2 dimensions
+#' model <- lol.project.lrlda(X=X, Y=Y, r=2)  # use lrlda to project into 2 dimensions
 #' @export
-lol.project.lrlda <- function(X, Y, r, xfm=FALSE, xfm.opts=list(), ...) {
+lol.project.lrlda <- function(X, Y, r, xfm=FALSE, xfm.opts=list(), robust=FALSE, ...) {
   # class data
-  classdat <- lol.utils.info(X, Y)
+  classdat <- lol.utils.info(X, Y, robust=robust)
   priors <- classdat$priors; centroids <- t(classdat$centroids)
   K <- classdat$K; ylabs <- classdat$ylabs
   n <- classdat$n; d <- classdat$d
@@ -139,8 +156,8 @@ lol.project.lrlda <- function(X, Y, r, xfm=FALSE, xfm.opts=list(), ...) {
   # form class-conditional data matrix
   Xt <- X - centroids[Yidx,]
   # compute the standard projection but with the pre-centered data.
-  svdX <- lol.utils.svd(Xt, xfm=xfm, xfm.opts=xfm.opts, nv=r, nu=0)
+  X.decomp <- lol.utils.decomp(Xt, xfm=xfm, xfm.opts=xfm.opts, ncomp=r, robust=robust)
 
-  return(list(A=svdX$v, d=svdX$d, centroids=centroids, priors=priors, ylabs=ylabs,
-              Xr=lol.embed(X, svdX$v), cr=lol.embed(centroids, svdX$v)))
+  return(list(A=X.decomp$comp, d=X.decomp$val, centroids=centroids, priors=priors, ylabs=ylabs,
+              Xr=lol.embed(X, X.decomp$comp), cr=lol.embed(centroids, X.decomp$comp)))
 }

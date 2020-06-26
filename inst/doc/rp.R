@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -6,7 +6,7 @@ n=400
 d=30
 r=3
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.cigar(n, d)
 X <- testdat$X
 Y <- testdat$Y
@@ -19,7 +19,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.rp(X, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
@@ -30,7 +30,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Projected Data using LR-CCA")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
 result <- predict(liney, result$Xr)
 lhat <- 1 - sum(result$class == Y)/length(Y)
@@ -43,7 +43,7 @@ ggplot(data, aes(x=x1, fill=y)) +
   ylab("Density") +
   ggtitle(sprintf("LR-CCA - LDA, L = %.2f", lhat))
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d)
 X <- testdat$X
 Y <- testdat$Y
@@ -56,7 +56,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.rp(X, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
@@ -67,7 +67,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Projected Data using LR-CCA")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
 result <- predict(liney, result$Xr)
 lhat <- 1 - sum(result$class == Y)/length(Y)
@@ -80,7 +80,7 @@ ggplot(data, aes(x=x1, fill=y)) +
   ylab("Density") +
   ggtitle(sprintf("RP-LDA, L = %.2f", lhat))
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d, rotate=TRUE)
 X <- testdat$X
 Y <- testdat$Y
@@ -93,7 +93,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.rp(X, r)
 
 data <- data.frame(x1=result$Xr[,1], x2=result$Xr[,2], y=Y)
@@ -104,7 +104,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Projected Data using LR-CCA")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 liney <- MASS::lda(result$Xr, Y)
 result <- predict(liney, result$Xr)
 lhat <- 1 - sum(result$class == Y)/length(Y)

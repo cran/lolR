@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 require(lolR)
 require(ggplot2)
 require(MASS)
@@ -6,7 +6,7 @@ n=400
 d=30
 r=3
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.cigar(n, d)
 X <- testdat$X
 Y <- testdat$Y
@@ -19,7 +19,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
@@ -30,7 +30,7 @@ ggplot(data, aes(x=x1, y=y, color=y)) +
   ylab("Class") +
   ggtitle("Projected Data using MDP")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d)
 X <- testdat$X
 Y <- testdat$Y
@@ -43,7 +43,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)
@@ -54,7 +54,7 @@ ggplot(data, aes(x=x1, y=y, color=y)) +
   ylab("Class") +
   ggtitle("Projected Data using MDP")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d, rotate=TRUE)
 X <- testdat$X
 Y <- testdat$Y
@@ -67,7 +67,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.project.dp(X, Y)
 
 data <- data.frame(x1=result$Xr[,1], y=Y)

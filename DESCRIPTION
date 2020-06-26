@@ -1,8 +1,8 @@
 Package: lolR
 Type: Package
 Title: Linear Optimal Low-Rank Projection
-Version: 2.0
-Date: 2018-04-12
+Version: 2.1
+Date: 2020-06-20
 Authors@R: c(person("Eric", "Bridgeford", role = c("aut", "cre"),
 	   	    email = "ericwb95@gmail.com"),
 	   	 person("Minh", "Tang", role="ctb",
@@ -16,18 +16,18 @@ Description: Supervised learning techniques designed for the situation when the 
 Depends: R (>= 3.4.0)
 License: GPL-2
 URL: https://github.com/neurodata/lol
-Imports: ggplot2, abind, MASS, irlba, pls
+Imports: ggplot2, abind, MASS, irlba, pls, robust, robustbase
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.0
 Suggests: knitr, rmarkdown, parallel, randomForest, latex2exp,
         testthat, covr
 NeedsCompilation: no
-Packaged: 2018-04-13 14:39:01 UTC; eric
+Packaged: 2020-06-25 18:56:31 UTC; eric
 Author: Eric Bridgeford [aut, cre],
   Minh Tang [ctb],
   Jason Yim [ctb],
   Joshua Vogelstein [ths]
 Repository: CRAN
-Date/Publication: 2018-04-13 15:14:54 UTC
+Date/Publication: 2020-06-26 22:30:03 UTC

@@ -1,11 +1,11 @@
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 require(lolR)
 require(ggplot2)
 n = 400
 d = 30
 r = 3
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 testdat <- lol.sims.rtrunk(n, d)
 X <- testdat$X
 Y <- testdat$Y
@@ -18,7 +18,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle("Simulated Data")
 
-## ---- fig.width=5--------------------------------------------------------
+## ---- fig.width=5-------------------------------------------------------------
 result <- lol.xval.eval(X, Y, r, alg = lol.project.lol, alg.return="A",
                         classifier=MASS::lda, classifier.return="class", k='loo')
 
@@ -30,7 +30,7 @@ ggplot(data, aes(x=x1, y=x2, color=y)) +
   ylab("x2") +
   ggtitle(sprintf("Projected Data using LOL, L=%.2f", result$lhat))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 result <- lol.xval.optimal_dimselect(X, Y, rs=c(5, 10, 15), alg = lol.project.lol, alg.return="A",
                         classifier=MASS::lda, classifier.return="class", k='loo')
 
